@@ -1,4 +1,4 @@
-var plugins = require('postcsspackage')
+var plugins = require('postcsspackage');
 $('button.package').on('click',function(){
     $('button#saveeditfile').trigger('click');
 });
@@ -14,6 +14,10 @@ $('button#saveeditfile').on('click',function(){
             tempel.load(postCSSconfig.editPath + postCSSconfig.cssFile + ' #form__token', function(){
                 var csstoken = tempel.find('input').attr('value');
                 tempel.remove();
+                var sourceFileName = postCSSconfig.sourceFile.split('/');
+                var cssFileName = postCSSconfig.cssFile.split('/');
+                sourceFileName = sourceFileName[sourceFileName.length-1];
+                cssFileName = cssFileName[cssFileName.length-1];
                 plugins.postcss([
                     plugins.postcssimporturl(),
                     plugins.mediaVariables(),
@@ -26,8 +30,8 @@ $('button#saveeditfile').on('click',function(){
                     plugins.csswring()
                 ])
                 .process(styles, {
-                    from: 'styles.css',
-                    to: 'styles.pkgd.css',
+                    from: sourceFileName,
+                    to: cssFileName,
                     map: { inline: false }
                 }).catch(function(result) {
                     alert(result);
