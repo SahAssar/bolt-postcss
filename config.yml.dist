@@ -1,0 +1,10 @@
+# All paths are relative to your theme
+
+# The file which your sourcemap will be written to
+mapFile: /css/styles.pkgd.css.map
+
+# The file which your compiled css will be written to
+cssFile: /css/styles.pkgd.css
+
+# The source for your css, this is the file you should use for all your imports
+sourceFile: /css/styles.css
