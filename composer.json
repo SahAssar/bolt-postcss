@@ -1,0 +1,27 @@
+{
+    "name": "boltabandoned/postcss",
+    "description": "Extension to add in-browser post-css compilation.",
+    "type": "bolt-extension",
+    "keywords": [],
+    "require": {
+        "bolt/bolt" : ">=2.2.13,<2.3.0"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Alan Smithee",
+            "email": "alan.smithee@example.com"
+        }
+    ],
+    "autoload": {
+        "files": [
+            "init.php"
+        ],
+        "psr-4": {
+            "Bolt\\Extension\\boltabandoned\\postcss\\": ""
+        }
+    },
+    "extra": {
+        "bolt-assets": "assets"
+    }
+}

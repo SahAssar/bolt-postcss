@@ -1,0 +1,16 @@
+{
+  "name": "bolt-postcss",
+  "version": "0.0.1",
+  "private": true,
+  "dependencies": {
+    "autoprefixer": "^6.1.2",
+    "browserify": "^12.0.1",
+    "csswring": "^4.0.0",
+    "postcss": "^5.0.12",
+    "postcss-calc": "^5.0.0",
+    "postcss-color-function": "^2.0.0",
+    "postcss-css-variables": "^0.5.1",
+    "postcss-extend": "^1.0.1",
+    "postcss-media-variables": "^2.0.0"
+  }
+}
