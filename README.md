@@ -55,3 +55,7 @@ Then your styles.css might look like this:
 ---
     
 You can then use the breakpoint variables in the imported CSS files, and it will all get neatly combined and minified to styles.pkgd.css.
+
+##Compatability
+
+It is compatible with Chrome, FF and MS edge. It is not compatible with IE since it uses promises.
