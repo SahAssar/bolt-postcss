@@ -22,6 +22,7 @@
         }
     },
     "extra": {
-        "bolt-assets": "assets"
+        "bolt-assets": "assets",
+        "bolt-icon": "postcss-logo.png"
     }
 }
