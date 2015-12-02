@@ -91,7 +91,9 @@
             <script>var postCSSconfig = {{ app['extensions.postcss'].config|merge({
                 onPage: (app.paths.current == app.resources.getUrl('bolt')~'file/edit/theme/'~app.config.get('general/theme')~app['extensions.postcss'].config.sourceFile),
                 editPath: app.resources.getUrl('bolt') ~ "file/edit/theme/" ~ app.config.get('general/theme'),
-                themePath: "/theme/"~app.config.get('general/theme')
+                themePath: "/theme/"~app.config.get('general/theme'),
+                mapToken: csrf_token('mapToken'),
+                cssToken: csrf_token('cssToken')
                 })|json_encode|raw }}</script>
             <script src="{{app.paths.extensions}}vendor/boltabandoned/postcss/assets/js/postcsspackage.pkgd.js"></script>
             <script src="{{app.paths.extensions}}vendor/boltabandoned/postcss/assets/js/bolt-postcss.js"></script>
