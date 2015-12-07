@@ -8,6 +8,7 @@ $('button.package').on('click', function () {
 });
 
 $('button#saveeditfile').on('click', function () {
+	var codemirror = $('.CodeMirror')[0].CodeMirror;
 	$('button.package i').toggleClass('fa-spinner fa-spin').toggleClass('fa-indent');
 
 	var files = [];
@@ -16,7 +17,7 @@ $('button#saveeditfile').on('click', function () {
 	postCssUglifyJSconfig.jsIncludes.forEach(function (filename, index) {
 		filelist[index] = postCssUglifyJSconfig.themePath +  filename;
 		if (postCssUglifyJSconfig.currentPath == postCssUglifyJSconfig.editBase + postCssUglifyJSconfig.themePath +  filename) {
-			files[index] = form_contents.value;
+			files[index] = codemirror.getValue();
 			checkDone();
 		} else {
 			$.get(postCssUglifyJSconfig.themePath + filename + "?q=" + moment().format("YYYYMMDDHHmmss"), function (file) {
