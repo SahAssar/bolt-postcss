@@ -4,10 +4,10 @@
     "type": "bolt-extension",
     "keywords": [
         "CSS",
-        "PostCSS"
+        "PostCSS",
         "JS",
-        "JavaScript"
-        "minfication"
+        "JavaScript",
+        "minfication",
         "UglifyJS",
         "Preprocessor",
         "Postprocessor"
