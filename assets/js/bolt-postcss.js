@@ -1,16 +1,31 @@
 var plugins = require('postcsspackage');
+
+$('<button type="button" class="btn btn-success package" style="margin-left: 24px;"><i class="fa fa-indent"></i> Package CSS</button>')
+.insertAfter('.btn-default.confirm');
+
 $('button.package').on('click',function(){
     $('button#saveeditfile').trigger('click');
 });
+
 $('button#saveeditfile').on('click',function(){
     $('button.package i').toggleClass('fa-spinner fa-spin').toggleClass('fa-indent');
-    $.get(postCSSconfig.themePath + postCSSconfig.sourceFile , function(styles){
-        styles = postCSSconfig.onPage ? form_contents.value : styles;
-        var sourceFileName = postCSSconfig.sourceFile.split('/');
-        var cssFileName = postCSSconfig.cssFile.split('/');
-        sourceFileName = sourceFileName[sourceFileName.length-1];
+    
+    if(postCssUglifyJSconfig.onCSSSourceFileEditPage){
+        processCSS(form_contents.value);
+    }else{
+        $.get(postCssUglifyJSconfig.themePath + postCssUglifyJSconfig.CSSsourceFile + "?q="+moment().format("YYYYMMDDHHmmss") , function(styles){
+            processCSS(styles);
+        });
+    }
+    function processCSS(styles){
+        
+        var CSSsourceFileName = postCssUglifyJSconfig.CSSsourceFile.split('/');
+        var cssFileName = postCssUglifyJSconfig.cssFile.split('/');
+        CSSsourceFileName = CSSsourceFileName[CSSsourceFileName.length-1];
         cssFileName = cssFileName[cssFileName.length-1];
+        
         plugins.postcss([
+            plugins.postcssimporturl(),
             plugins.postcssimporturl(),
             plugins.mediaVariables(),
             plugins.cssvariables(),
@@ -22,7 +37,7 @@ $('button#saveeditfile').on('click',function(){
             plugins.csswring()
         ])
         .process(styles, {
-            from: sourceFileName,
+            from: CSSsourceFileName,
             to: cssFileName,
             map: { inline: false }
         }).catch(function(result) {
@@ -31,25 +46,47 @@ $('button#saveeditfile').on('click',function(){
         })
         .then(function (result) {
             if(result){
-                result.css = result.css.replace(".css.map",".css.map?q="+moment().format("YYYYMMDDHHmmss"));
-                var cssopts = {
-                    "form[_token]": postCSSconfig.cssToken,
-                    "form[contents]": result.css
-                }
-                $.post(postCSSconfig.editPath + postCSSconfig.cssFile + '?returnto=ajax', cssopts, function(data){
-                    console.log('done (css)');
+                var done = false;
+                var csstempel = $('<div></div>');
+                $('body').append(csstempel);
+                csstempel.load(postCssUglifyJSconfig.editPath + postCssUglifyJSconfig.cssFile + ' #form__token', function () {
+                    var cssToken = csstempel.find('input').attr('value');
+                    csstempel.remove();
+                    result.css = result.css.replace(".css.map",".css.map?q="+moment().format("YYYYMMDDHHmmss"));
+                    var cssopts = {
+                        "form[_token]": cssToken,
+                        "form[contents]": result.css
+                    }
+                    $.post(postCssUglifyJSconfig.editPath + postCssUglifyJSconfig.cssFile + '?returnto=ajax', cssopts, function(data){
+                        $('.lastsaved').append('<br>'+data.msg);
+                        if (done) {
+                            $('button.package i').toggleClass('fa-spinner fa-spin').toggleClass('fa-indent');
+                        } else {
+                            done = true;
+                        }
+                    });
                 });
-                var mapopts = {
-                    "form[_token]": postCSSconfig.mapToken,
-                    "form[contents]": result.map.toString()
-                }
-                $.post(postCSSconfig.editPath + postCSSconfig.mapFile + '?returnto=ajax', mapopts, function(data){
-                    console.log('done (map)');
-                    $('button.package i').toggleClass('fa-spinner fa-spin').toggleClass('fa-indent');
+                var maptempel = $('<div></div>');
+                $('body').append(maptempel);
+                maptempel.load(postCssUglifyJSconfig.editPath + postCssUglifyJSconfig.jsFile + '.map #form__token', function () {
+                    var mapToken = maptempel.find('input').attr('value');
+                    maptempel.remove();
+                    var mapopts = {
+                        "form[_token]": mapToken,
+                        "form[contents]": result.map.toString()
+                    }
+                    $.post(postCssUglifyJSconfig.editPath + postCssUglifyJSconfig.cssFile + '.map?returnto=ajax', mapopts, function(data){
+                        $('.lastsaved').append('<br>'+data.msg);
+                        if (done) {
+                            $('button.package i').toggleClass('fa-spinner fa-spin').toggleClass('fa-indent');
+                        } else {
+                            done = true;
+                        }
+                    });
                 });
             }else{
                 alert('Unkown error');
             }
         });
-    });
+    };
 });
