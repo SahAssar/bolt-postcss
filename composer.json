@@ -2,7 +2,16 @@
     "name": "boltabandoned/postcss",
     "description": "Extension to add in-browser post-css compilation.",
     "type": "bolt-extension",
-    "keywords": [],
+    "keywords": [
+        "CSS",
+        "PostCSS"
+        "JS",
+        "JavaScript"
+        "minfication"
+        "UglifyJS",
+        "Preprocessor",
+        "Postprocessor"
+        ],
     "require": {
         "bolt/bolt" : ">=2.2.13,<2.3.0"
     },
