@@ -1,10 +1,32 @@
-# All paths are relative to your theme
+# All paths here are relative to your theme folder
 
-# The file which your sourcemap will be written to
-mapFile: /css/styles.pkgd.css.map
+# PostCSS settings
+# ----------------
+# Whether to activate PostCSS functionality or not.
+PostCSS: false
 
-# The file which your compiled css will be written to
+# The source for your css, this is the file you should use for 
+# all your imports, and will serve as the "entrypoint" for PostCSS
+CSSsourceFile: /css/styles.css
+
+# The file which your compiled CSS will be written to
+# The sourcemap will be written to a file with the same name 
+# but with .map appended. Make sure that both this and the
+# .map file exists.
 cssFile: /css/styles.pkgd.css
 
-# The source for your css, this is the file you should use for all your imports
-sourceFile: /css/styles.css
+# UglifyJS settings
+# -----------------
+# Whether to activate UglifyJS functionality or not.
+UglifyJS: false
+
+# The file which your compiled JS will be written to
+# The sourcemap will be written to a file with the same name 
+# but with .map appended. Make sure that both this and the
+# .map file exists.
+jsFile: /js/scripts.pkgd.js
+
+# JS files to include
+jsIncludes:
+    - /js/modules/jquery-2.1.4.js
+    - /js/scripts.js

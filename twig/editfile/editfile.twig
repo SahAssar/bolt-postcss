@@ -49,11 +49,6 @@
                     >
                         <i class="fa fa-undo"></i> {{ __("page.edit-file.button.revert") }}
                     </a>
-                    {% if context.filetype == "css" %}
-                    <button type="button" class="btn btn-success package" style="margin-left: 24px;">
-                        <i class="fa fa-indent"></i> Package CSS
-                    </button>
-                    {% endif %}
 
                   <div class="relatedfiles">
                     {% if context.filegroup|length > 1 %}
@@ -78,6 +73,13 @@
     </div>
 
     {% if not ismobileclient() %}
+        <script>var postCssUglifyJSconfig = {{ app['extensions.postcss'].config|merge({
+        onCSSSourceFileEditPage: (app.paths.current == app.resources.getUrl('bolt')~'file/edit/theme/'~app.config.get('general/theme')~app['extensions.postcss'].config.CSSsourceFile),
+        editPath: app.resources.getUrl('bolt') ~ "file/edit/theme/" ~ app.config.get('general/theme'),
+        themePath: "/theme/"~app.config.get('general/theme'),
+        currentPath: app.paths.current,
+        editBase: app.resources.getUrl('bolt') ~ "file/edit"
+        })|json_encode|raw }}</script>
         {% if context.filetype in ['twig', 'html', 'htm'] %}
             {% set codemirror = ['xml', 'javascript', 'css', 'htmlmixed'] %}
         {% elseif context.filetype == "php" %}
@@ -88,17 +90,16 @@
             {% set codemirror = ['markdown'] %}
         {% elseif context.filetype in ['css', 'less'] %}
             {% set codemirror = ['css'] %}
-            <script>var postCSSconfig = {{ app['extensions.postcss'].config|merge({
-                onPage: (app.paths.current == app.resources.getUrl('bolt')~'file/edit/theme/'~app.config.get('general/theme')~app['extensions.postcss'].config.sourceFile),
-                editPath: app.resources.getUrl('bolt') ~ "file/edit/theme/" ~ app.config.get('general/theme'),
-                themePath: "/theme/"~app.config.get('general/theme'),
-                mapToken: csrf_token('mapToken'),
-                cssToken: csrf_token('cssToken')
-                })|json_encode|raw }}</script>
-            <script src="{{app.paths.extensions}}vendor/boltabandoned/postcss/assets/js/postcsspackage.pkgd.js"></script>
-            <script src="{{app.paths.extensions}}vendor/boltabandoned/postcss/assets/js/bolt-postcss.js"></script>
+            {% if app['extensions.postcss'].config.PostCSS %}
+                <script src="{{app.paths.extensions}}vendor/boltabandoned/postcss/assets/js/bolt-postcss.pkgd.js"></script>
+                <script src="{{app.paths.extensions}}vendor/boltabandoned/postcss/assets/js/bolt-postcss.js"></script>
+            {% endif %}
         {% elseif context.filetype == "js" %}
             {% set codemirror = ['javascript'] %}
+            {% if (app.paths.current|replace({(app.resources.getUrl('bolt')~'file/edit')~'/theme/'~app.config.get('general/theme') : ''}) in app['extensions.postcss'].config.jsIncludes) and app['extensions.postcss'].config.UglifyJS %}
+                <script src="{{app.paths.extensions}}vendor/boltabandoned/postcss/assets/js/bolt-uglifyjs.pkgd.js"></script>
+                <script src="{{app.paths.extensions}}vendor/boltabandoned/postcss/assets/js/bolt-uglifyjs.js"></script>
+            {% endif %}
         {% else %}
             {% set codemirror = [] %}
         {% endif %}
