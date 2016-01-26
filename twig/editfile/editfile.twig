@@ -94,6 +94,7 @@
                 <script src="{{app.paths.extensions}}vendor/boltabandoned/postcss/assets/js/bolt-postcss.pkgd.js"></script>
                 <script src="{{app.paths.extensions}}vendor/boltabandoned/postcss/assets/js/bolt-postcss.js"></script>
             {% endif %}
+            <script src="{{app.paths.extensions}}vendor/boltabandoned/postcss/assets/js/beautify.js"></script>
         {% elseif context.filetype == "js" %}
             {% set codemirror = ['javascript'] %}
             {% if (app.paths.current|replace({(app.resources.getUrl('bolt')~'file/edit')~'/theme/'~app.config.get('general/theme') : ''}) in app['extensions.postcss'].config.jsIncludes) and app['extensions.postcss'].config.UglifyJS %}
@@ -111,6 +112,7 @@
         {% for file in codemirror %}
             <script src="{{ paths.app }}view/js/ckeditor/plugins/codemirror/plugins/{{ file }}.min.js"></script>
         {% endfor %}
+        <script src="{{app.paths.extensions}}vendor/boltabandoned/postcss/assets/js/editfile.js"></script>
     {% endif %}
 
 {% endblock page_main %}
