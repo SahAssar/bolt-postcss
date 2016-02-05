@@ -15,12 +15,12 @@ $('button#saveeditfile').on('click', function () {
 	var filelist = [];
 	
 	postCssUglifyJSconfig.jsIncludes.forEach(function (filename, index) {
-		filelist[index] = postCssUglifyJSconfig.themePath +  filename;
-		if (postCssUglifyJSconfig.currentPath == postCssUglifyJSconfig.editBase + postCssUglifyJSconfig.themePath +  filename) {
+		filelist[index] = filename;
+		if (postCssUglifyJSconfig.currentPath == postCssUglifyJSconfig.editBase + filename) {
 			files[index] = codemirror.getValue();
 			checkDone();
 		} else {
-			$.get(postCssUglifyJSconfig.themePath + filename + "?q=" + moment().format("YYYYMMDDHHmmss"), function (file) {
+			$.get(filename + "?q=" + moment().format("YYYYMMDDHHmmss"), function (file) {
 				files[index] = file;
 				checkDone();
 			}, 'text');

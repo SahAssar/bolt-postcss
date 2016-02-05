@@ -75,7 +75,7 @@
     {% if not ismobileclient() %}
         <script>var postCssUglifyJSconfig = {{ app['extensions.postcss'].config|merge({
         onCSSSourceFileEditPage: (app.paths.current == app.resources.getUrl('bolt')~'file/edit/theme/'~app.config.get('general/theme')~app['extensions.postcss'].config.CSSsourceFile),
-        editPath: app.resources.getUrl('bolt') ~ "file/edit/theme/" ~ app.config.get('general/theme'),
+        editPath: app.resources.getUrl('bolt') ~ "file/edit",
         themePath: "/theme/"~app.config.get('general/theme'),
         currentPath: app.paths.current,
         editBase: app.resources.getUrl('bolt') ~ "file/edit"
@@ -97,7 +97,7 @@
             <script src="{{app.paths.extensions}}vendor/boltabandoned/postcss/assets/js/beautify.js"></script>
         {% elseif context.filetype == "js" %}
             {% set codemirror = ['javascript'] %}
-            {% if (app.paths.current|replace({(app.resources.getUrl('bolt')~'file/edit')~'/theme/'~app.config.get('general/theme') : ''}) in app['extensions.postcss'].config.jsIncludes) and app['extensions.postcss'].config.UglifyJS %}
+            {% if (app.paths.current|replace({(app.resources.getUrl('bolt')~'file/edit') : ''}) in app['extensions.postcss'].config.jsIncludes) and app['extensions.postcss'].config.UglifyJS %}
                 <script src="{{app.paths.extensions}}vendor/boltabandoned/postcss/assets/js/bolt-uglifyjs.pkgd.js"></script>
                 <script src="{{app.paths.extensions}}vendor/boltabandoned/postcss/assets/js/bolt-uglifyjs.js"></script>
             {% endif %}

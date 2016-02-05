@@ -22,8 +22,7 @@ It can also do JS minification/uglifying via the UglifyJS settings.
 Set the filepaths in the config and make sure all of the files exist (including
 the .map files).
 
-Use the absolute url for @import's in the CSS, since they are pulled in via a
-normal AJAX request.
+Use the absolute url's, since they are pulled in via a normal AJAX request.
 
 ##Example (PostCSS)
 
@@ -85,13 +84,13 @@ Say you have this directory structure in your theme:
 
 Then you would use this config:
 
-    jsFile: /js/scripts.pkgd.js
+    jsFile: /theme/yourthemename/js/scripts.pkgd.js
     
     jsIncludes:
-        - /js/modules/jquery-2.1.4.js
-        - /js/modules/slick-1.5.9.js
-        - /js/modules/magnific-popup-1.0.0.js
-        - /js/scripts.js
+        - /theme/yourthemename/js/modules/jquery-2.1.4.js
+        - /theme/yourthemename/js/modules/slick-1.5.9.js
+        - /theme/yourthemename/js/modules/magnific-popup-1.0.0.js
+        - /theme/yourthemename/js/scripts.js
         
 ---
 
