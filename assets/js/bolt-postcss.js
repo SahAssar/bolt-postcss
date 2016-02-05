@@ -13,7 +13,7 @@ $('button#saveeditfile').on('click',function(){
     $('button.package i').toggleClass('fa-spinner fa-spin').toggleClass('fa-indent');
     
     if(postCssUglifyJSconfig.onCSSSourceFileEditPage){
-        processCSS(codemirror.getValue());
+        processCSS($('.CodeMirror').get(0).CodeMirror.getValue());
     }else{
         $.get(postCssUglifyJSconfig.themePath + postCssUglifyJSconfig.CSSsourceFile + "?q="+moment().format("YYYYMMDDHHmmss") , function(styles){
             processCSS(styles);
