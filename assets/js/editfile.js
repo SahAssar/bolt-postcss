@@ -862,7 +862,7 @@ $(window).on('load', function(){
     codemirror.options.indentWithTabs = !1;
     
     codemirror.options.extraKeys = {
-        "Tab": "betterTab",
+        Tab: betterTab,
         "Ctrl-S": function(instance) { $('#saveeditfile').click(); },
         "Ctrl-/": "undo",
         "Alt-F": "findPersistent"

@@ -24,9 +24,9 @@ UglifyJS: false
 # The sourcemap will be written to a file with the same name 
 # but with .map appended. Make sure that both this and the
 # .map file exists.
-jsFile: /js/scripts.pkgd.js
+jsFile: /theme/yourthemename/js/scripts.pkgd.js
 
 # JS files to include
 jsIncludes:
-    - /js/modules/jquery-2.1.4.js
-    - /js/scripts.js
+        - /theme/yourthemename/js/modules/jquery-2.1.4.js
+        - /theme/yourthemename/js/scripts.js

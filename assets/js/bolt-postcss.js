@@ -1,6 +1,5 @@
 var plugins = require('postcsspackage');
 
-$.ajaxSetup({ cache: false });
 
 $('<button type="button" class="btn btn-success package" style="margin-left: 24px;"><i class="fa fa-indent"></i> Package CSS</button>')
 .insertAfter('.btn-default.confirm');
@@ -10,15 +9,14 @@ $('button.package').on('click',function(){
 });
 
 $('button#saveeditfile').on('click',function(){
+    var codemirror = $('.CodeMirror')[0].CodeMirror;
     $('button.package i').toggleClass('fa-spinner fa-spin').toggleClass('fa-indent');
     
     if(postCssUglifyJSconfig.onCSSSourceFileEditPage){
-        processCSS($('#form_contents').val());
+        processCSS(codemirror.getValue());
     }else{
-        $(Bolt).on('done.bolt.file.save', function(){
-            $.get(postCssUglifyJSconfig.themePath + postCssUglifyJSconfig.CSSsourceFile + "?q="+moment().format("YYYYMMDDHHmmss") , function(styles){
-                processCSS(styles);
-            });
+        $.get(postCssUglifyJSconfig.themePath + postCssUglifyJSconfig.CSSsourceFile + "?q="+moment().format("YYYYMMDDHHmmss") , function(styles){
+            processCSS(styles);
         });
     }
     function processCSS(styles){
@@ -72,7 +70,7 @@ $('button#saveeditfile').on('click',function(){
                 });
                 var maptempel = $('<div></div>');
                 $('body').append(maptempel);
-                maptempel.load(postCssUglifyJSconfig.editPath + postCssUglifyJSconfig.jsFile + '.map #form__token', function () {
+                maptempel.load(postCssUglifyJSconfig.editPath + postCssUglifyJSconfig.cssFile + '.map #form__token', function () {
                     var mapToken = maptempel.find('input').attr('value');
                     maptempel.remove();
                     var mapopts = {
