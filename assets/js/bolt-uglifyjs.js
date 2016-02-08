@@ -15,12 +15,16 @@ $('button#saveeditfile').on('click', function () {
 	var filelist = [];
 	
 	postCssUglifyJSconfig.jsIncludes.forEach(function (filename, index) {
-		filelist[index] = filename;
+		if (postCssUglifyJSconfig.use_relative_js_path) {
+			filelist[index] = postCssUglifyJSconfig.themePath + filename;
+		} else {
+			filelist[index] = filename;
+		}
 		if (postCssUglifyJSconfig.currentPath == postCssUglifyJSconfig.editBase + filename) {
 			files[index] = codemirror.getValue();
 			checkDone();
 		} else {
-			$.get(filename + "?q=" + moment().format("YYYYMMDDHHmmss"), function (file) {
+			$.get(filelist[index] + "?q=" + moment().format("YYYYMMDDHHmmss"), function (file) {
 				files[index] = file;
 				checkDone();
 			}, 'text');
