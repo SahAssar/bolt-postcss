@@ -97,7 +97,16 @@
             <script src="{{app.paths.extensions}}vendor/boltabandoned/postcss/assets/js/beautify.js"></script>
         {% elseif context.filetype == "js" %}
             {% set codemirror = ['javascript'] %}
-            {% if (app.paths.current|replace({(app.resources.getUrl('bolt')~'file/edit') : ''}) in app['extensions.postcss'].config.jsIncludes) and app['extensions.postcss'].config.UglifyJS %}
+            {{d(app.paths.current|replace({(app.resources.getUrl('bolt')~'file/edit')~'/theme/'~app.config.get('general/theme') : ''}))}}
+            {{d(app['extensions.postcss'].config.use_relative_js_path)}}
+            {% if 
+            (
+             (app.paths.current|replace({(app.resources.getUrl('bolt')~'file/edit') : ''}) in app['extensions.postcss'].config.jsIncludes) or
+             (app.paths.current|replace({(app.resources.getUrl('bolt')~'file/edit')~'/theme/'~app.config.get('general/theme') : ''}) in app['extensions.postcss'].config.jsIncludes
+              and app['extensions.postcss'].config.use_relative_js_path)
+             )
+             and app['extensions.postcss'].config.UglifyJS
+            %}
                 <script src="{{app.paths.extensions}}vendor/boltabandoned/postcss/assets/js/bolt-uglifyjs.pkgd.js"></script>
                 <script src="{{app.paths.extensions}}vendor/boltabandoned/postcss/assets/js/bolt-uglifyjs.js"></script>
             {% endif %}

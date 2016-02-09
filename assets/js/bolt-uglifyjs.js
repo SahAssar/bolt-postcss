@@ -44,6 +44,10 @@ $('button#saveeditfile').on('click', function () {
 	}
 	
 	function processJS() {
+		if (postCssUglifyJSconfig.use_relative_js_path) {
+			postCssUglifyJSconfig.jsFile = postCssUglifyJSconfig.themePath + postCssUglifyJSconfig.jsFile;
+		}
+		
 		var jsmapFile = postCssUglifyJSconfig.jsFile.split('/');
 		jsmapFile = jsmapFile[jsmapFile.length - 1] + ".map?q=" + moment().format("YYYYMMDDHHmmss");
 
