@@ -97,8 +97,6 @@
             <script src="{{app.paths.extensions}}vendor/boltabandoned/postcss/assets/js/beautify.js"></script>
         {% elseif context.filetype == "js" %}
             {% set codemirror = ['javascript'] %}
-            {{d(app.paths.current|replace({(app.resources.getUrl('bolt')~'file/edit')~'/theme/'~app.config.get('general/theme') : ''}))}}
-            {{d(app['extensions.postcss'].config.use_relative_js_path)}}
             {% if 
             (
              (app.paths.current|replace({(app.resources.getUrl('bolt')~'file/edit') : ''}) in app['extensions.postcss'].config.jsIncludes) or
