@@ -1,4 +1,4 @@
-# PostCSS settings
+ # PostCSS settings
 # ----------------
 # Whether to activate PostCSS functionality or not.
 PostCSS: false
@@ -31,5 +31,5 @@ use_relative_js_path: false
 
 # JS files to include
 jsIncludes:
-        - /theme/yourthemename/js/modules/jquery-2.1.4.js
-        - /theme/yourthemename/js/scripts.js
+    - /theme/yourthemename/js/modules/jquery-2.1.4.js
+    - /theme/yourthemename/js/scripts.js

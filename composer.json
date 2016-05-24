@@ -1,19 +1,8 @@
 {
     "name": "boltabandoned/postcss",
-    "description": "Extension to add in-browser post-css compilation.",
     "type": "bolt-extension",
-    "keywords": [
-        "CSS",
-        "PostCSS",
-        "JS",
-        "JavaScript",
-        "minfication",
-        "UglifyJS",
-        "Preprocessor",
-        "Postprocessor"
-        ],
     "require": {
-        "bolt/bolt" : ">=2.2.13,<2.3.0"
+        "bolt/bolt": "^3.0.0"
     },
     "license": "MIT",
     "authors": [
@@ -23,15 +12,12 @@
         }
     ],
     "autoload": {
-        "files": [
-            "init.php"
-        ],
         "psr-4": {
-            "Bolt\\Extension\\boltabandoned\\postcss\\": ""
+            "boltabandoned\\postcss\\": "src"
         }
     },
     "extra": {
-        "bolt-assets": "assets",
-        "bolt-icon": "postcss-logo.png"
+        "bolt-class": "boltabandoned\\postcss\\postcssExtension",
+        "bolt-assets": "web"
     }
 }
