@@ -12,15 +12,8 @@ $('button.package').on('click',function(){
 $('button#saveeditfile').on('click',function(){
     $('button.package i').toggleClass('fa-spinner fa-spin').toggleClass('fa-indent');
     
-    if(postCssConfig.onCSSPage){
-        processCSS($('.CodeMirror').get(0).CodeMirror.getValue());
-    }else{
-        $(Bolt).one('done.bolt.file.save', function(){
-            $.get(postCssConfig.themePath + postCssConfig.CSSsourceFile + "?q="+moment().format("YYYYMMDDHHmmss") , function(styles){
-                processCSS(styles);
-            });
-        });
-    }
+    processCSS($('.CodeMirror').get(0).CodeMirror.getValue());
+    
     function processCSS(styles){
         
         var CSSsourceFileName = postCssConfig.CSSsourceFile.split('/');
@@ -50,10 +43,11 @@ $('button#saveeditfile').on('click',function(){
         })
         .then(function (result) {
             if(result){
+                postCssConfig.cssFile = postCssConfig.cssFile.replace('/theme/', '/themes/');
                 var done = false;
                 var csstempel = $('<div></div>');
                 $('body').append(csstempel);
-                csstempel.load(postCssConfig.editPath + postCssConfig.themePath + postCssConfig.cssFile + ' #form__token', function () {
+                csstempel.load(postCssConfig.editPath + postCssConfig.cssFile + ' #form__token', function () {
                     var cssToken = csstempel.find('input').attr('value');
                     csstempel.remove();
                     result.css = result.css.replace(".css.map",".css.map?q="+moment().format("YYYYMMDDHHmmss"));
@@ -61,7 +55,7 @@ $('button#saveeditfile').on('click',function(){
                         "form[_token]": cssToken,
                         "form[contents]": result.css
                     }
-                    $.post(postCssConfig.editPath + postCssConfig.themePath + postCssConfig.cssFile + '?returnto=ajax', cssopts, function(data){
+                    $.post(postCssConfig.editPath + postCssConfig.cssFile + '?returnto=ajax', cssopts, function(data){
                         $('.lastsaved').append('<br>'+data.msg);
                         if (done) {
                             $('button.package i').toggleClass('fa-spinner fa-spin').toggleClass('fa-indent');
@@ -72,14 +66,14 @@ $('button#saveeditfile').on('click',function(){
                 });
                 var maptempel = $('<div></div>');
                 $('body').append(maptempel);
-                maptempel.load(postCssConfig.editPath + postCssConfig.themePath + postCssConfig.cssFile + '.map #form__token', function () {
+                maptempel.load(postCssConfig.editPath + postCssConfig.cssFile + '.map #form__token', function () {
                     var mapToken = maptempel.find('input').attr('value');
                     maptempel.remove();
                     var mapopts = {
                         "form[_token]": mapToken,
                         "form[contents]": result.map.toString()
                     }
-                    $.post(postCssConfig.editPath + postCssConfig.themePath + postCssConfig.cssFile + '.map?returnto=ajax', mapopts, function(data){
+                    $.post(postCssConfig.editPath + postCssConfig.cssFile + '.map?returnto=ajax', mapopts, function(data){
                         $('.lastsaved').append('<br>'+data.msg);
                         if (done) {
                             $('button.package i').toggleClass('fa-spinner fa-spin').toggleClass('fa-indent');

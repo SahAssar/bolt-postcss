@@ -14,13 +14,9 @@ $('button#saveeditfile').on('click', function () {
 	var files = [];
 	var filelist = [];
 	
-	postCssUglifyJSconfig.jsIncludes.forEach(function (filename, index) {
-		if (postCssUglifyJSconfig.use_relative_js_path) {
-			filelist[index] = postCssUglifyJSconfig.themePath + filename;
-		} else {
-			filelist[index] = filename;
-		}
-		if (postCssUglifyJSconfig.currentPath == postCssUglifyJSconfig.editBase + filename) {
+	postCssConfig.jsIncludes.forEach(function (filename, index) {
+	    filelist[index] = filename;
+		if (postCssConfig.currentPath == postCssConfig.editBase + filename) {
 			files[index] = codemirror.getValue();
 			checkDone();
 		} else {
@@ -33,7 +29,7 @@ $('button#saveeditfile').on('click', function () {
 	
 	function checkDone() {
 		done = true;
-		postCssUglifyJSconfig.jsIncludes.forEach(function (file, index) {
+		postCssConfig.jsIncludes.forEach(function (file, index) {
 			if (files[index] == undefined) {
 				done = false;
 			}
@@ -44,27 +40,28 @@ $('button#saveeditfile').on('click', function () {
 	}
 	
 	function processJS() {
-		if (postCssUglifyJSconfig.use_relative_js_path) {
-			postCssUglifyJSconfig.jsFile = postCssUglifyJSconfig.themePath + postCssUglifyJSconfig.jsFile;
+		if (postCssConfig.use_relative_js_path) {
+			postCssConfig.jsFile = postCssConfig.themePath + postCssConfig.jsFile;
 		}
 		
-		var jsmapFile = postCssUglifyJSconfig.jsFile.split('/');
+		var jsmapFile = postCssConfig.jsFile.split('/');
 		jsmapFile = jsmapFile[jsmapFile.length - 1] + ".map?q=" + moment().format("YYYYMMDDHHmmss");
 
 		var result = uglifyjs.UglifyJS.minify(files, { fromString: true, filelist: filelist, outSourceMap: jsmapFile });
 
 		if (result) {
+            postCssConfig.jsFile = postCssConfig.jsFile.replace('/theme/', '/themes/');
 			var done = false;
 			var jstempel = $('<div></div>');
 			$('body').append(jstempel);
-			jstempel.load(postCssUglifyJSconfig.editPath + postCssUglifyJSconfig.jsFile + ' #form__token', function () {
+			jstempel.load(postCssConfig.editPath + postCssConfig.jsFile + ' #form__token', function () {
 				var jsToken = jstempel.find('input').attr('value');
 				jstempel.remove();
 				var cssopts = {
 					"form[_token]": jsToken,
 					"form[contents]": result.code
 				}
-				$.post(postCssUglifyJSconfig.editPath + postCssUglifyJSconfig.jsFile + '?returnto=ajax', cssopts, function (data) {
+				$.post(postCssConfig.editPath + postCssConfig.jsFile + '?returnto=ajax', cssopts, function (data) {
 					$('.lastsaved').append('<br>'+data.msg);
 					if (done) {
 						$('button.package i').toggleClass('fa-spinner fa-spin').toggleClass('fa-indent');
@@ -75,14 +72,14 @@ $('button#saveeditfile').on('click', function () {
 			});
 			var maptempel = $('<div></div>');
 			$('body').append(maptempel);
-			maptempel.load(postCssUglifyJSconfig.editPath + postCssUglifyJSconfig.jsFile + '.map #form__token', function () {
+			maptempel.load(postCssConfig.editPath + postCssConfig.jsFile + '.map #form__token', function () {
 				var mapToken = maptempel.find('input').attr('value');
 				maptempel.remove();
 				var mapopts = {
 					"form[_token]": mapToken,
 					"form[contents]": result.map
 				}
-				$.post(postCssUglifyJSconfig.editPath + postCssUglifyJSconfig.jsFile + '.map?returnto=ajax', mapopts, function (data) {
+				$.post(postCssConfig.editPath + postCssConfig.jsFile + '.map?returnto=ajax', mapopts, function (data) {
 					$('.lastsaved').append('<br>'+data.msg)
 					if (done) {
 						$('button.package i').toggleClass('fa-spinner fa-spin').toggleClass('fa-indent');

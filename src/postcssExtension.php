@@ -11,9 +11,13 @@ use Bolt\Asset\Target;
 
 class postcssExtension extends SimpleExtension
 {
-    private $CSSAssets = [
+    private $PostCSSAssets = [
         'js/bolt-postcss.pkgd.js',
         'js/bolt-postcss.js',
+        'js/beautify.js'
+    ];
+    
+    private $CSSAssets = [
         'js/beautify.js'
     ];
 
@@ -33,33 +37,29 @@ class postcssExtension extends SimpleExtension
     public function postcss_assets()
     {
         $app = $this->getContainer();
-        $conf = array_merge(
-            $this->getConfig(),
-            [
-                'editPath' => $app['resources']->getURL('bolt') . 'file/edit',
-                'themePath' => '/themes/'.$app['config']->get('general/theme'),
-                'currentPath' => $app['resources']->getURL('current')
-            ]
-        );
-
-        $path = str_replace(
-            $app['config']->get('general/theme'),
-            '',
-            $app['request']->get('file')
-        );
-
-        $conf['onCSSPage'] = ($conf['CSSsourceFile'] === $path);
-
+        
         if ($app['request']->get('_route') === 'fileedit' &&
             $app['request']->get('namespace') === 'themes' &&
             $app['request']->get('file')) {
+        
+            $conf = array_merge(
+                $this->getConfig(),
+                [
+                    'editPath' => $app['resources']->getURL('bolt') . 'file/edit',
+                    'themePath' => '/themes/'.$app['config']->get('general/theme'),
+                    'currentPath' => $app['resources']->getURL('current')
+                ]
+            );
 
             $extension = pathinfo($app['request']->get('file'), PATHINFO_EXTENSION);
+            
             $queue = [];
-
-            if($extension === 'css'){
+            
+            if ($extension === 'css' && $conf['PostCSS']) {
+                $queue = $this->PostCSSAssets;
+            } elseif (($conf['CSSsourceFile'] === '/theme/' . $app['request']->get('file')) && $conf['PostCSS']) {
                 $queue = $this->CSSAssets;
-            }elseif($extension === 'js'){
+            } elseif ($extension === 'js' && $conf['UglifyJS']) {
                 $queue = $this->JSAssets;
             }
 

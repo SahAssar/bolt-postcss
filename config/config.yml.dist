@@ -5,13 +5,13 @@ PostCSS: false
 
 # The source for your css, this is the file you should use for 
 # all your imports, and will serve as the "entrypoint" for PostCSS
-CSSsourceFile: /css/styles.css
+CSSsourceFile: /theme/yourthemename/css/styles.css
 
 # The file which your compiled CSS will be written to
 # The sourcemap will be written to a file with the same name 
 # but with .map appended. Make sure that both this and the
 # .map file exists.
-cssFile: /css/styles.pkgd.css
+cssFile: /theme/yourthemename/css/styles.pkgd.css
 
 # UglifyJS settings
 # -----------------
@@ -23,11 +23,6 @@ UglifyJS: false
 # but with .map appended. Make sure that both this and the
 # .map file exists.
 jsFile: /theme/yourthemename/js/scripts.pkgd.js
-
-# Override the old defaults
-# Set to true or remove to use include paths like "/js/modules/jquery-2.1.4.js"
-# Set to false to use include paths like "/theme/yourthemename/js/modules/jquery-2.1.4.js"
-use_relative_js_path: false
 
 # JS files to include
 jsIncludes:
