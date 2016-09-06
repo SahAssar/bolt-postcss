@@ -4,14 +4,17 @@
 PostCSS: false
 
 # The source for your css, this is the file you should use for 
-# all your imports, and will serve as the "entrypoint" for PostCSS
-CSSsourceFile: /theme/yourthemename/css/styles.css
+# all your imports, and will serve as the "entrypoint" for PostCSS.
+# Any imports in this file will be flattened and should be relative
+# to the web root.
+# This path is relative to your theme folder.
+CSSsourceFile: css/styles.css
 
 # The file which your compiled CSS will be written to
 # The sourcemap will be written to a file with the same name 
 # but with .map appended. Make sure that both this and the
-# .map file exists.
-cssFile: /theme/yourthemename/css/styles.pkgd.css
+# .map file exists. This path is relative to your theme folder.
+cssFile: css/styles.pkgd.css
 
 # UglifyJS settings
 # -----------------
@@ -21,10 +24,10 @@ UglifyJS: false
 # The file which your compiled JS will be written to
 # The sourcemap will be written to a file with the same name 
 # but with .map appended. Make sure that both this and the
-# .map file exists.
-jsFile: /theme/yourthemename/js/scripts.pkgd.js
+# .map file exists. This path is relative to your theme folder.
+jsFile: js/scripts.pkgd.js
 
-# JS files to include
+# JS files to include. These are relative to the web root.
 jsIncludes:
     - /theme/yourthemename/js/modules/jquery-2.1.4.js
     - /theme/yourthemename/js/scripts.js

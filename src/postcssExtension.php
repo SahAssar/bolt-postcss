@@ -34,12 +34,14 @@ class postcssExtension extends SimpleExtension
         }, 1000);
     }
 
+
+
     public function postcss_assets()
     {
         $app = $this->getContainer();
         
         if ($app['request']->get('_route') === 'fileedit' &&
-            $app['request']->get('namespace') === 'themes' &&
+            ($app['request']->get('namespace') === 'themes' || $app['request']->get('namespace') === 'theme') &&
             $app['request']->get('file')) {
         
             $conf = array_merge(
@@ -55,9 +57,11 @@ class postcssExtension extends SimpleExtension
             
             $queue = [];
             
-            if ($extension === 'css' && $conf['PostCSS']) {
+            $file = str_replace($app['config']->get('general/theme') . '/', '', $app['request']->get('file'));
+            
+            if (($conf['CSSsourceFile'] === $file) && $conf['PostCSS']) {
                 $queue = $this->PostCSSAssets;
-            } elseif (($conf['CSSsourceFile'] === '/theme/' . $app['request']->get('file')) && $conf['PostCSS']) {
+            } elseif ($extension === 'css' &&  $conf['PostCSS']) {
                 $queue = $this->CSSAssets;
             } elseif ($extension === 'js' && $conf['UglifyJS']) {
                 $queue = $this->JSAssets;
@@ -67,6 +71,8 @@ class postcssExtension extends SimpleExtension
                 
                 $asset = (new JavaScript($assetFile))
                         ->setZone(Zone::BACKEND)
+                        ->setAttributes(['defer'])
+                        ->setLocation(Target::AFTER_JS)
                         ->setPriority($priority);
 
                 $file = $this->getWebDirectory()->getFile($asset->getPath());
