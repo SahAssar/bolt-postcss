@@ -8,6 +8,7 @@ use Bolt\Asset\Snippet\Snippet;
 use Bolt\Asset\File\Stylesheet;
 use Bolt\Controller\Zone;
 use Bolt\Asset\Target;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class postcssExtension extends SimpleExtension
 {
@@ -16,7 +17,7 @@ class postcssExtension extends SimpleExtension
         'js/bolt-postcss.js',
         'js/beautify.js'
     ];
-    
+
     private $CSSAssets = [
         'js/beautify.js'
     ];
@@ -26,7 +27,7 @@ class postcssExtension extends SimpleExtension
         'js/bolt-uglifyjs.js'
     ];
 
-    protected function subscribe()
+    protected function subscribe(EventDispatcherInterface $dispatcher)
     {
         $app = $this->getContainer();
         $app->after(function(){
@@ -34,16 +35,14 @@ class postcssExtension extends SimpleExtension
         }, 1000);
     }
 
-
-
     public function postcss_assets()
     {
         $app = $this->getContainer();
-        
+
         if ($app['request']->get('_route') === 'fileedit' &&
-            ($app['request']->get('namespace') === 'themes' || $app['request']->get('namespace') === 'theme') &&
+            $app['request']->get('namespace') === 'themes' &&
             $app['request']->get('file')) {
-        
+
             $conf = array_merge(
                 $this->getConfig(),
                 [
@@ -54,30 +53,26 @@ class postcssExtension extends SimpleExtension
             );
 
             $extension = pathinfo($app['request']->get('file'), PATHINFO_EXTENSION);
-            
+
             $queue = [];
-            
-            $file = str_replace($app['config']->get('general/theme') . '/', '', $app['request']->get('file'));
-            
-            if (($conf['CSSsourceFile'] === $file) && $conf['PostCSS']) {
+
+            if ($extension === 'css' && $conf['PostCSS']) {
                 $queue = $this->PostCSSAssets;
-            } elseif ($extension === 'css' &&  $conf['PostCSS']) {
+            } elseif (($conf['CSSsourceFile'] === '/theme/' . $app['request']->get('file')) && $conf['PostCSS']) {
                 $queue = $this->CSSAssets;
             } elseif ($extension === 'js' && $conf['UglifyJS']) {
                 $queue = $this->JSAssets;
             }
 
             foreach($queue as $priority=>$assetFile){
-                
+
                 $asset = (new JavaScript($assetFile))
                         ->setZone(Zone::BACKEND)
-                        ->setAttributes(['defer'])
-                        ->setLocation(Target::AFTER_JS)
                         ->setPriority($priority);
 
                 $file = $this->getWebDirectory()->getFile($asset->getPath());
                 $asset->setPackageName('extensions')->setPath($file->getPath());
-        
+
                 $app['asset.queue.file']->add($asset);
             }
 

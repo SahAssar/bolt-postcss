@@ -7,8 +7,6 @@ $('button.package').on('click', function () {
     $('button#saveeditfile').trigger('click');
 });
 
-postCssConfig.jsFile = '/theme/' + postCssConfig.jsFile;
-
 $('button#saveeditfile').on('click', function () {
 	var codemirror = $('.CodeMirror')[0].CodeMirror;
 	$('button.package i').toggleClass('fa-spinner fa-spin').toggleClass('fa-indent');
@@ -42,12 +40,17 @@ $('button#saveeditfile').on('click', function () {
 	}
 	
 	function processJS() {
+		if (postCssConfig.use_relative_js_path) {
+			postCssConfig.jsFile = postCssConfig.themePath + postCssConfig.jsFile;
+		}
+		
 		var jsmapFile = postCssConfig.jsFile.split('/');
 		jsmapFile = jsmapFile[jsmapFile.length - 1] + ".map?q=" + moment().format("YYYYMMDDHHmmss");
 
 		var result = uglifyjs.UglifyJS.minify(files, { fromString: true, filelist: filelist, outSourceMap: jsmapFile });
 
 		if (result) {
+            postCssConfig.jsFile = postCssConfig.jsFile.replace('/theme/', '/themes/');
 			var done = false;
 			var jstempel = $('<div></div>');
 			$('body').append(jstempel);

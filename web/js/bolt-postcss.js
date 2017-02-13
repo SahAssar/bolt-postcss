@@ -9,8 +9,6 @@ $('button.package').on('click',function(){
     $('button#saveeditfile').trigger('click');
 });
 
-postCssConfig.cssFile = '/theme/' + postCssConfig.cssFile;
-
 $('button#saveeditfile').on('click',function(){
     $('button.package i').toggleClass('fa-spinner fa-spin').toggleClass('fa-indent');
     
@@ -44,7 +42,8 @@ $('button#saveeditfile').on('click',function(){
             $('button.package i').toggleClass('fa-spinner fa-spin').toggleClass('fa-indent');
         })
         .then(function (result) {
-            if(result){                
+            if(result){
+                postCssConfig.cssFile = postCssConfig.cssFile.replace('/theme/', '/themes/');
                 var done = false;
                 var csstempel = $('<div></div>');
                 $('body').append(csstempel);
