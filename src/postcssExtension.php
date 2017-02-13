@@ -8,6 +8,12 @@ use Bolt\Asset\Snippet\Snippet;
 use Bolt\Asset\File\Stylesheet;
 use Bolt\Controller\Zone;
 use Bolt\Asset\Target;
+use Silex\ControllerCollection;
+
+use Bolt\Application;
+
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class postcssExtension extends SimpleExtension
@@ -27,27 +33,86 @@ class postcssExtension extends SimpleExtension
         'js/bolt-uglifyjs.js'
     ];
 
+    /**
+     * @param Request $request
+     * @param Application $app
+     * @return null|RedirectResponse
+     */
+    public function before(Request $request, Application $app)
+    {
+        if (!$app['users']->isAllowed('files:theme')) {
+            /** @var UrlGeneratorInterface $generator */
+            $generator = $app['url_generator'];
+            return new RedirectResponse($generator->generate('dashboard'), Response::HTTP_SEE_OTHER);
+        }
+        return null;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function registerBackendRoutes(ControllerCollection $collection)
+    {
+        $collection->post('/extensions/postcss/updatecssfiles', [$this, 'updateCssFiles'])->before([$this, 'before']);
+        $collection->post('/extensions/postcss/updatejsfiles', [$this, 'updateJsFiles'])->before([$this, 'before']);
+    }
+
     protected function subscribe(EventDispatcherInterface $dispatcher)
     {
         $app = $this->getContainer();
         $app->after(function(){
-            $this->postcss_assets();
+            $this->postcssAssets();
         }, 1000);
     }
 
-    public function postcss_assets()
+    public function updateJsFiles(Application $app, Request $request)
+    {
+        $app = $this->getContainer();
+        $config = $this->getConfig();
+        $newCSS = $request->get('processed');
+        $newSourcemap = $request->get('sourcemap');
+
+        $app['filesystem']->getFile('theme://' . $config['jsFile'])->put($newCSS);
+        $app['filesystem']->getFile('theme://' . $config['jsFile'] . '.map')->put($newSourcemap);
+
+        return $app->json(['OK!']);
+    }
+
+    public function updateCssFiles(Application $app, Request $request)
+    {
+
+        $app = $this->getContainer();
+        $config = $this->getConfig();
+        $newCSS = $request->get('processed');
+        $newSourcemap = $request->get('sourcemap');
+
+        $app['filesystem']->getFile('theme://' . $config['cssFile'])->put($newCSS);
+        $app['filesystem']->getFile('theme://' . $config['cssFile'] . '.map')->put($newSourcemap);
+
+        return $app->json(['OK!']);
+    }
+
+    public function postcssAssets()
     {
         $app = $this->getContainer();
 
-        if ($app['request']->get('_route') === 'fileedit' &&
-            $app['request']->get('namespace') === 'themes' &&
+
+        if (($app['request']->get('namespace') === 'theme' ||
+            $app['request']->get('namespace') === 'themes') &&
             $app['request']->get('file')) {
+
+            $file = $app['request']->get('file');
+            if($app['request']->get('namespace') === 'themes'){
+                $file = preg_replace('/^([a-zA-Z0-9_\-]*\/)/', '', $file);
+            }
 
             $conf = array_merge(
                 $this->getConfig(),
                 [
+                    'file' => $file,
+                    'backendpath' => trim($app['config']->get('general/branding/path'), '/'),
                     'editPath' => $app['resources']->getURL('bolt') . 'file/edit',
-                    'themePath' => '/themes/'.$app['config']->get('general/theme'),
+                    'themePath' => '/themes/' . $app['config']->get('general/theme'),
                     'currentPath' => $app['resources']->getURL('current')
                 ]
             );
@@ -56,16 +121,15 @@ class postcssExtension extends SimpleExtension
 
             $queue = [];
 
-            if ($extension === 'css' && $conf['PostCSS']) {
+            if (($conf['CSSsourceFile'] === $file) && $conf['PostCSS']) {
                 $queue = $this->PostCSSAssets;
-            } elseif (($conf['CSSsourceFile'] === '/theme/' . $app['request']->get('file')) && $conf['PostCSS']) {
+            } elseif ($extension === 'css' && $conf['PostCSS']) {
                 $queue = $this->CSSAssets;
             } elseif ($extension === 'js' && $conf['UglifyJS']) {
                 $queue = $this->JSAssets;
             }
 
             foreach($queue as $priority=>$assetFile){
-
                 $asset = (new JavaScript($assetFile))
                         ->setZone(Zone::BACKEND)
                         ->setPriority($priority);
