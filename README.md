@@ -11,10 +11,10 @@ following plugins:
  * [postcss-calc](https://github.com/postcss/postcss-calc)
  * [postcss-color-function](https://github.com/postcss/postcss-color-function)
  * [postcss-extend](https://github.com/travco/postcss-extend)
- * [postcss-import-url](https://github.com/unlight/postcss-import-url) 
+ * [postcss-import-url](https://github.com/unlight/postcss-import-url)
  (Modified to use jQuery instead of node-request and to remove some
  incompatible dependencies)
- 
+
 It can also do JS minification/uglifying via the UglifyJS settings.
 
 ##Config
@@ -51,15 +51,15 @@ Then your styles.css might look like this:
         --breakpoint-s: 800px;
         --breakpoint-xs: 500px;
     }
-    
+
     @import "/theme/yourthemename/css/modules/normalize.css";
     @import "/theme/yourthemename/css/modules/grid.css";
     @import "/theme/yourthemename/css/modules/menu.css";
 
     /* Some more styles */
-    
+
 ---
-    
+
 You can then use the breakpoint variables in the imported CSS files, and it
 will all get neatly combined and minified to styles.pkgd.css.
 
@@ -84,20 +84,23 @@ Say you have this directory structure in your theme:
 
 Then you would use this config:
 
-    jsFile: /theme/yourthemename/js/scripts.pkgd.js
-    
-    jsIncludes:
-        - /theme/yourthemename/js/modules/jquery-2.1.4.js
-        - /theme/yourthemename/js/modules/slick-1.5.9.js
-        - /theme/yourthemename/js/modules/magnific-popup-1.0.0.js
-        - /theme/yourthemename/js/scripts.js
-        
+    jsFile: js/scripts.pkgd.js
+
+---
+
+Then your scripts.js might look like this:
+
+---
+
+    require('/theme/yourthemename/js/modules/jquery-2.1.4.js');
+    require('/theme/yourthemename/js/modules/slick-1.5.9.js');
+    require('/theme/yourthemename/js/modules/magnific-popup-1.0.0.js');
+
+    /* The rest of your JS */
+
+
+
 ---
 
 And then any time you save one of those JS files it will recomplie a new
 `scripts.pkgd.js` that contains all your code.
-
-##Compatability
-
-It is compatible with Chrome, FF and MS edge. It is not compatible with IE
-since it uses promises.
