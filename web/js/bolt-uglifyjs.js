@@ -1,5 +1,4 @@
 $(document).ready(function() {
-    var uglifyjs = require('uglifyjs');
 
     $('<button type="button" class="btn btn-success package" style="margin-left: 24px;"><i class="fa fa-indent"></i> Package JS</button>')
         .insertAfter('.btn-default.confirm');
@@ -12,30 +11,24 @@ $(document).ready(function() {
         var codemirror = $('.CodeMirror')[0].CodeMirror;
         $('button.package i').toggleClass('fa-spinner fa-spin').toggleClass('fa-indent');
 
-        var files = [];
-        var filelist = [];
+        var res = codemirror.getValue();
+        var deps = [];
+        codemirror.getValue().replace(/^(?![\/\*])(.*)?require\(\s*["']([^"']*)["']\s*\)/gmi, function (_, prefix, file) {
+            deps.push(file);
+            return prefix + 'require(' + file + ')';
+        });
 
-        postCssConfig.jsIncludes.forEach(function(filename, index) {
-            filelist[index] = filename;
-            if (postCssConfig.currentPath == postCssConfig.editBase + filename) {
-                files[index] = codemirror.getValue();
+        deps.forEach(function(filename, index) {
+            $.get(filename + "?q=" + moment().format("YYYYMMDDHHmmss"), function(content) {
+                var regex = new RegExp("^(?![\/\*])(.*)?require\\(\s*[\"']"+filename+"[\"']\s*\\)","gmi");
+                deps.splice(deps.indexOf(filename), 1);
+                res = res.replace(regex, content);
                 checkDone();
-            } else {
-                $.get(filelist[index] + "?q=" + moment().format("YYYYMMDDHHmmss"), function(file) {
-                    files[index] = file;
-                    checkDone();
-                }, 'text');
-            }
+            }, 'text');
         });
 
         function checkDone() {
-            done = true;
-            postCssConfig.jsIncludes.forEach(function(file, index) {
-                if (files[index] == undefined) {
-                    done = false;
-                }
-            });
-            if (done) {
+            if (!deps[0]) {
                 processJS();
             }
         }
@@ -43,9 +36,8 @@ $(document).ready(function() {
         function processJS() {
             var jsmapFile = postCssConfig.jsFile.split('/');
             jsmapFile = jsmapFile[jsmapFile.length - 1] + ".map?q=" + moment().format("YYYYMMDDHHmmss");
-            var result = uglifyjs.UglifyJS.minify(files, { fromString: true, filelist: filelist, outSourceMap: jsmapFile });
-
-            if (result) {
+            try {
+                var result = uglifyjspackage.uglifyjs.minify([res], { fromString: true, filelist: ["scripts.js"], outSourceMap: jsmapFile });
                 $.post('/' + postCssConfig.backendpath + '/extensions/postcss/updatejsfiles', {
                     processed: result.code,
                     sourcemap: result.map.toString()
@@ -53,8 +45,10 @@ $(document).ready(function() {
                     $('.lastsaved').append('<br> sourcemap & processed files saved');
                     $('button.package i').toggleClass('fa-spinner fa-spin').toggleClass('fa-indent');
                 });
-            } else {
-                alert('Unkown error');
+            }
+            catch (e) {
+                alert(e);
+                $('button.package i').toggleClass('fa-spinner fa-spin').toggleClass('fa-indent');
             }
         }
     });

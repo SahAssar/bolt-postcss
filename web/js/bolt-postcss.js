@@ -1,5 +1,4 @@
 $(document).ready(function() {
-    var plugins = require('postcsspackage');
 
     $('<button type="button" class="btn btn-success package" style="margin-left: 24px;"><i class="fa fa-indent"></i> Package CSS</button>')
         .insertAfter('.btn-default.confirm');
@@ -14,23 +13,20 @@ $(document).ready(function() {
         var cssFileName = postCssConfig.cssFile.split('/');
         CSSsourceFileName = CSSsourceFileName[CSSsourceFileName.length - 1];
         cssFileName = cssFileName[cssFileName.length - 1];
-        plugins.postcss([
-            plugins.postcssimporturl(),
-            plugins.postcssimporturl(),
-            plugins.mediaVariables(),
-            plugins.cssvariables(),
-            plugins.postcsscalc(),
-            plugins.mediaVariables(),
-            plugins.colorFunction(),
-            plugins.autoprefixer({ browsers: ['last 2 versions'] }),
-            plugins.postcssExtend(),
-            plugins.csswring()
+        postcsspackage.postcss([
+            postcsspackage.postcssimporturl(),
+            postcsspackage.postcssimporturl(),
+            postcsspackage.cssvariables(),
+            postcsspackage.postcsscalc(),
+            postcsspackage.autoprefixer({ browsers: ['last 2 versions'] }),
+            postcsspackage.postcssExtend(),
+            postcsspackage.csswring()
         ]).process($('.CodeMirror').get(0).CodeMirror.getValue(), {
             from: CSSsourceFileName,
             to: cssFileName,
             map: { inline: false }
-        }).catch(function(result) {
-            alert(result);
+        }).catch(function(error) {
+            alert(error);
             $('button.package i').toggleClass('fa-spinner fa-spin').toggleClass('fa-indent');
         }).then(function(result) {
             if (result) {

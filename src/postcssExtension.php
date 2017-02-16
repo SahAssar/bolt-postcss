@@ -69,10 +69,10 @@ class postcssExtension extends SimpleExtension
     {
         $app = $this->getContainer();
         $config = $this->getConfig();
-        $newCSS = $request->get('processed');
+        $newJS = $request->get('processed');
         $newSourcemap = $request->get('sourcemap');
 
-        $app['filesystem']->getFile('theme://' . $config['jsFile'])->put($newCSS);
+        $app['filesystem']->getFile('theme://' . $config['jsFile'])->put($newJS);
         $app['filesystem']->getFile('theme://' . $config['jsFile'] . '.map')->put($newSourcemap);
 
         return $app->json(['OK!']);
@@ -125,7 +125,7 @@ class postcssExtension extends SimpleExtension
                 $queue = $this->PostCSSAssets;
             } elseif ($extension === 'css' && $conf['PostCSS']) {
                 $queue = $this->CSSAssets;
-            } elseif ($extension === 'js' && $conf['UglifyJS']) {
+            } elseif (($conf['JSsourceFile'] === $file) && $conf['UglifyJS']) {
                 $queue = $this->JSAssets;
             }
 

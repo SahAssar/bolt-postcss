@@ -5,26 +5,27 @@ PostCSS: false
 
 # The source for your css, this is the file you should use for 
 # all your imports, and will serve as the "entrypoint" for PostCSS
-CSSsourceFile: /theme/yourthemename/css/styles.css
+CSSsourceFile: css/styles.css
 
 # The file which your compiled CSS will be written to
 # The sourcemap will be written to a file with the same name 
 # but with .map appended. Make sure that both this and the
 # .map file exists.
-cssFile: /theme/yourthemename/css/styles.pkgd.css
+cssFile: css/styles.pkgd.css
 
 # UglifyJS settings
 # -----------------
 # Whether to activate UglifyJS functionality or not.
 UglifyJS: false
 
+JSsourceFile: js/scripts.js
+
 # The file which your compiled JS will be written to
 # The sourcemap will be written to a file with the same name 
 # but with .map appended. Make sure that both this and the
 # .map file exists.
-jsFile: /theme/yourthemename/js/scripts.pkgd.js
+jsFile: js/scripts.pkgd.js
 
-# JS files to include
-jsIncludes:
-    - /theme/yourthemename/js/modules/jquery-2.1.4.js
-    - /theme/yourthemename/js/scripts.js
+# To include files in it use `require('your_filename.js');` in
+# the file. This is not a full require.js implementation, it just
+# replaces the require function with the code
