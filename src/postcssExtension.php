@@ -29,7 +29,6 @@ class postcssExtension extends SimpleExtension
     ];
 
     private $JSAssets = [
-        'js/bolt-uglifyjs.pkgd.js',
         'js/bolt-uglifyjs.js'
     ];
 
