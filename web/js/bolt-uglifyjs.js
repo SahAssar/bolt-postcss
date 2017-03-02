@@ -1,5 +1,23 @@
-$(document).ready(function() {
+var scripts= document.getElementsByTagName('script');
+var path= scripts[scripts.length-1].src.split('?')[0];      // remove any ?query
+var mydir= path.split('/').slice(0, -1).join('/')+'/';
+var uglifyJsWorker = new Worker(mydir + 'uglify-js-worker.js');
+uglifyJsWorker.postMessage({path: mydir});
+uglifyJsWorker.onmessage = function(e) {
+    if(e.data.err){
+        alert(e.data.err.message);
+        return;
+    }
+    $.post('/' + postCssConfig.backendpath + '/extensions/postcss/updatejsfiles', {
+        processed: e.data.result.code,
+        sourcemap: ''
+    }, function(data) {
+        $('.lastsaved').append('<br> sourcemap & processed files saved');
+        $('button.package i').toggleClass('fa-spinner fa-spin').toggleClass('fa-indent');
+    });
+}
 
+$(document).ready(function() {
     $('<button type="button" class="btn btn-success package" style="margin-left: 24px;"><i class="fa fa-indent"></i> Package JS</button>')
         .insertAfter('.btn-default.confirm');
 
@@ -13,16 +31,19 @@ $(document).ready(function() {
 
         var res = codemirror.getValue();
         var deps = [];
-        codemirror.getValue().replace(/^(?![\/\*])(.*)?require\(\s*["']([^"']*)["']\s*\)/gmi, function (_, prefix, file) {
-            deps.push(file);
-            return prefix + 'require(' + file + ')';
+        var files = {};
+        codemirror.getValue().replace(/^(?![\/\*])(.*)?require\(\s*["']([^"']*)["']\s*\)/gmi, function (_, prefix, filename) {
+            deps.push(filename);
+            files[filename] = '';
+            return prefix + 'require(' + filename + ')';
         });
 
         deps.forEach(function(filename, index) {
             $.get(filename + "?q=" + moment().format("YYYYMMDDHHmmss"), function(content) {
-                var regex = new RegExp("^(?![\/\*])(.*)?require\\(\s*[\"']"+filename+"[\"']\s*\\)","gmi");
+                var regex = new RegExp("^(?![\/\*])(.*)?require\\(\\s*[\"']"+filename+"[\"']\\s*\\);","gmi");
                 deps.splice(deps.indexOf(filename), 1);
-                res = res.replace(regex, content);
+                files[filename] = content;
+                res = res.replace(regex, '');
                 checkDone();
             }, 'text');
         });
@@ -34,22 +55,8 @@ $(document).ready(function() {
         }
 
         function processJS() {
-            var jsmapFile = postCssConfig.jsFile.split('/');
-            jsmapFile = jsmapFile[jsmapFile.length - 1] + ".map?q=" + moment().format("YYYYMMDDHHmmss");
-            try {
-                var result = uglifyjspackage.uglifyjs.minify([res], { fromString: true, filelist: ["scripts.js"], outSourceMap: jsmapFile });
-                $.post('/' + postCssConfig.backendpath + '/extensions/postcss/updatejsfiles', {
-                    processed: result.code,
-                    sourcemap: result.map.toString()
-                }, function(data) {
-                    $('.lastsaved').append('<br> sourcemap & processed files saved');
-                    $('button.package i').toggleClass('fa-spinner fa-spin').toggleClass('fa-indent');
-                });
-            }
-            catch (e) {
-                alert(e);
-                $('button.package i').toggleClass('fa-spinner fa-spin').toggleClass('fa-indent');
-            }
+            files["scripts.js"] = res;
+            uglifyJsWorker.postMessage({files: files});
         }
     });
 });
