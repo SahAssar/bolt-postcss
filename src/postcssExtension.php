@@ -21,11 +21,6 @@ class postcssExtension extends SimpleExtension
     private $PostCSSAssets = [
         'js/bolt-postcss.pkgd.js',
         'js/bolt-postcss.js',
-        'js/beautify.js'
-    ];
-
-    private $CSSAssets = [
-        'js/beautify.js'
     ];
 
     private $JSAssets = [
@@ -122,8 +117,6 @@ class postcssExtension extends SimpleExtension
 
             if (($conf['CSSsourceFile'] === $file) && $conf['PostCSS']) {
                 $queue = $this->PostCSSAssets;
-            } elseif ($extension === 'css' && $conf['PostCSS']) {
-                $queue = $this->CSSAssets;
             } elseif (($conf['JSsourceFile'] === $file) && $conf['UglifyJS']) {
                 $queue = $this->JSAssets;
             }
