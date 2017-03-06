@@ -104,3 +104,10 @@ Then your scripts.js might look like this:
 
 And then any time you save one of those JS files it will recomplie a new
 `scripts.pkgd.js` that contains all your code.
+
+## Recompiling the postcss and uglifyjs packages:
+
+```
+browserify postcsspackage.js --standalone postcsspackage --outfile bolt-postcss.pkgd.js
+browserify uglifyjspackage.js --standalone uglifyjspackage --outfile bolt-uglifyjs.pkgd.js
+```
