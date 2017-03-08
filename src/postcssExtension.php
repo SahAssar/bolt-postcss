@@ -12,6 +12,9 @@ use Silex\ControllerCollection;
 
 use Bolt\Application;
 
+use Symfony\Component\Yaml\Dumper;
+use Symfony\Component\Yaml\Parser;
+
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -74,6 +77,15 @@ class postcssExtension extends SimpleExtension
 
     public function updateCssFiles(Application $app, Request $request)
     {
+        $dumper = new Dumper();
+        $parser = new Parser();
+        $variables = json_decode($request->get('variables'), true);
+        $currentConfig = $app['filesystem']->getFile('config://extensions/postcss.boltabandoned.yml');
+        $configArr = $parser->parse($currentConfig->read());
+        $configArr['variables'] = $variables;
+        $dumper->setIndentation(4);
+        $updatedConfig = $dumper->dump($configArr, 9999);
+        $currentConfig->put($updatedConfig);
 
         $app = $this->getContainer();
         $config = $this->getConfig();

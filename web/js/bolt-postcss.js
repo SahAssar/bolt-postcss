@@ -246,7 +246,11 @@ $(document).ready(function() {
         var cssFileName = postCssConfig.cssFile.split('/');
         CSSsourceFileName = CSSsourceFileName[CSSsourceFileName.length - 1];
         cssFileName = cssFileName[cssFileName.length - 1];
+        var variables = {}
         postcsspackage.postcss([
+            postcsspackage.postcssGetVariables(function(parsedVariables) {
+                variables = parsedVariables;
+            }),
             postcsspackage.postcssimporturl(),
             postcsspackage.postcssimporturl(),
             postcsspackage.cssvariables(),
@@ -266,7 +270,8 @@ $(document).ready(function() {
             if (result) {
                 $.post('/' + postCssConfig.backendpath + '/extensions/postcss/updatecssfiles', {
                     processed: result.css,
-                    sourcemap: result.map.toString()
+                    sourcemap: result.map.toString(),
+                    variables: JSON.stringify(variables)
                 }, function(data) {
                     $('.lastsaved').append('<br> sourcemap & processed files saved');
                     $('button.package i').toggleClass('fa-spinner fa-spin').toggleClass('fa-indent');
