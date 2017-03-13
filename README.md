@@ -63,6 +63,9 @@ Then your styles.css might look like this:
 You can then use the breakpoint variables in the imported CSS files, and it
 will all get neatly combined and minified to styles.pkgd.css.
 
+You can also get your variables in twig using `{{css()}}` like so:
+`{{css('padding')}}`
+
 
 ##Example (UglifyJS)
 

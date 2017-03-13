@@ -246,7 +246,7 @@ $(document).ready(function() {
         var cssFileName = postCssConfig.cssFile.split('/');
         CSSsourceFileName = CSSsourceFileName[CSSsourceFileName.length - 1];
         cssFileName = cssFileName[cssFileName.length - 1];
-        var variables = {}
+        var variables = {};
         postcsspackage.postcss([
             postcsspackage.postcssGetVariables(function(parsedVariables) {
                 variables = parsedVariables;

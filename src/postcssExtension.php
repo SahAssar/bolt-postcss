@@ -48,6 +48,22 @@ class postcssExtension extends SimpleExtension
     /**
      * {@inheritdoc}
      */
+    protected function registerTwigFunctions()
+    {
+        return [
+            'css' => 'GetCssVariable'
+        ];
+    }
+
+    public function GetCssVariable(String $name)
+    {
+        $config = $this->getConfig();
+        return $config['variables'][$name];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     protected function registerBackendRoutes(ControllerCollection $collection)
     {
         $collection->post('/extensions/postcss/updatecssfiles', [$this, 'updateCssFiles'])->before([$this, 'before']);
