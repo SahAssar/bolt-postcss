@@ -54,6 +54,8 @@ $(document).ready(function() {
             }
         }
 
+        checkDone();
+
         function processJS() {
             files["scripts.js"] = res;
             uglifyJsWorker.postMessage({files: files});
