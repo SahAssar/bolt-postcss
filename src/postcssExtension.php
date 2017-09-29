@@ -75,7 +75,7 @@ class postcssExtension extends SimpleExtension
         $app = $this->getContainer();
         $app->after(function(){
             $this->postcssAssets();
-        }, 1000);
+        });
     }
 
     public function updateJsFiles(Application $app, Request $request)
