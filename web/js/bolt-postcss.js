@@ -7,7 +7,7 @@ $(document).ready(function() {
     $('<button type="button" class="btn btn-success beautifysortcompact" style="margin-left: 24px;"><i class="fa fa-indent"></i> Beautify CSS (compact)</button>')
         .insertAfter('.btn-default.confirm');
     $('button.package').on('click', function() {
-        $('button#saveeditfile').trigger('click');
+        $('button#file_edit_save').trigger('click');
     });
 
     $('.beautifysortcompact').on('click', function() {
@@ -240,7 +240,7 @@ $(document).ready(function() {
         });
     });
 
-    $('button#saveeditfile').on('click', function() {
+    $('button#file_edit_save').on('click', function() {
         $('button.package i').toggleClass('fa-spinner fa-spin').toggleClass('fa-indent');
         var CSSsourceFileName = postCssConfig.CSSsourceFile.split('/');
         var cssFileName = postCssConfig.cssFile.split('/');
