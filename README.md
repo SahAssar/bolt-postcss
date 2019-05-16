@@ -1,4 +1,8 @@
-#Bolt-PostCSS/UglifyJS
+### Looking for a maintainer
+
+This repo needs a maintainer, if you want to take it over open an issue.
+
+# Bolt-PostCSS/UglifyJS
 
 
 This extension uses in-browser PostCSS compilation (via browserify) with the
